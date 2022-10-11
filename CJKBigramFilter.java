@@ -185,7 +185,7 @@ public final class CJKBigramFilter extends TokenFilter {
 
         String type = typeAtt.type();
         if (type == doHan || type == doHiragana || type == doKatakana || type == doHangul) {
-          if (termAtt.length() > 2) {
+          if (termAtt.length() > 1) {
             //
             flushExtragram(termAtt.length());
             return true;

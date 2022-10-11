@@ -3,3 +3,5 @@
 JFlex ファイルは、lucene/lucene/lucene/core/src/java/org/apache/lucene/analysis/standard に jflex の jar ファイルを置いて、例えば "java -jar jflex-full-1.8.2.jar -d ./StandardTokenizerImpl.jflex" のコマンドで、java ファイルを作ります。
 
 CJK Analyzer は、lucene/lucene/lucene/core/src/java のフォルダから、javac を通して class ファイルを生成します。
+
+URL : https://qiita.com/YmBIgo/items/7dafa6a31cc6fe9a0f8c
