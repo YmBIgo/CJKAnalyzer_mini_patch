@@ -1,0 +1,5 @@
+## CJK Analyzer でカタカナだけ連続して表示させるデモ
+
+JFlex ファイルは、lucene/lucene/lucene/core/src/java/org/apache/lucene/analysis/standard に jflex の jar ファイルを置いて、例えば "java -jar jflex-full-1.8.2.jar -d ./StandardTokenizerImpl.jflex" のコマンドで、java ファイルを作ります。
+
+CJK Analyzer は、lucene/lucene/lucene/core/src/java のフォルダから、javac を通して class ファイルを生成します。
