@@ -307,25 +307,26 @@ public final class CJKBigramFilter extends TokenFilter {
 
   private void flushExtragram(int extra_length) {
     //
-    char[] termBuffer = termAtt.buffer();
-    int len = termAtt.length();
-    int start = offsetAtt.startOffset();
-    int end = offsetAtt.endOffset();
+    // char[] termBuffer = termAtt.buffer();
+    // int len = termAtt.length();
+    // int start = offsetAtt.startOffset();
+    // int end = offsetAtt.endOffset();
+    // //
+    // int newSize = bufferLen + len;
+    // startOffset = ArrayUtil.grow(startOffset, newSize);
+    // endOffset = ArrayUtil.grow(endOffset, newSize);
+    // //
+    // for (int i = 0, cp = 0, cpLen = 0; i < len; i += cpLen) {
+    //   cp = buffer[bufferLen] = Character.codePointAt(termBuffer, i, len);
+    //   cpLen = Character.charCount(cp);
+    //   startOffset[bufferLen] = start;
+    //   start = endOffset[bufferLen] = start + cpLen;
+    //   bufferLen++;
+    // }
     //
-    int newSize = bufferLen + len;
-    startOffset = ArrayUtil.grow(startOffset, newSize);
-    endOffset = ArrayUtil.grow(endOffset, newSize);
-    //
-    for (int i = 0, cp = 0, cpLen = 0; i < len; i += cpLen) {
-      cp = buffer[bufferLen] = Character.codePointAt(termBuffer, i, len);
-      cpLen = Character.charCount(cp);
-      startOffset[bufferLen] = start;
-      start = endOffset[bufferLen] = start + cpLen;
-      bufferLen++;
-    }
-    //
+    refill();
     clearAttributes();
-    termBuffer = termAtt.resizeBuffer(extra_length*2);
+    termBuffer[] = termAtt.resizeBuffer(extra_length*2);
     int len_extra = 0;
     for (int i = 1; i < extra_length + 1; i++){
       int len_i = Character.toChars(buffer[index + i], termBuffer, len_extra);
