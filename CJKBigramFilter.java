@@ -16,6 +16,7 @@
  */
 package org.apache.lucene.analysis.cjk;
 
+import java.util.Arrays;
 import java.io.IOException;
 import org.apache.lucene.analysis.TokenFilter;
 import org.apache.lucene.analysis.TokenStream;
@@ -185,9 +186,9 @@ public final class CJKBigramFilter extends TokenFilter {
 
         String type = typeAtt.type();
         if (type == doHan || type == doHiragana || type == doKatakana || type == doHangul) {
-          if (termAtt.length() > 1) {
+          if (termAtt.length() > 1 && type == doKatakana) {
             //
-            flushExtragram(termAtt.length());
+            flushExtragram(termAtt.length(), termAtt.buffer());
             return true;
           }
           // acceptable CJK type: we form n-grams from these.
@@ -305,37 +306,38 @@ public final class CJKBigramFilter extends TokenFilter {
     }
   }
 
-  private void flushExtragram(int extra_length) {
-    //
-    // char[] termBuffer = termAtt.buffer();
-    // int len = termAtt.length();
-    // int start = offsetAtt.startOffset();
-    // int end = offsetAtt.endOffset();
-    // //
-    // int newSize = bufferLen + len;
-    // startOffset = ArrayUtil.grow(startOffset, newSize);
-    // endOffset = ArrayUtil.grow(endOffset, newSize);
-    // //
-    // for (int i = 0, cp = 0, cpLen = 0; i < len; i += cpLen) {
-    //   cp = buffer[bufferLen] = Character.codePointAt(termBuffer, i, len);
-    //   cpLen = Character.charCount(cp);
-    //   startOffset[bufferLen] = start;
-    //   start = endOffset[bufferLen] = start + cpLen;
-    //   bufferLen++;
-    // }
+  private void flushExtragram(int extraLength, char[] originalBuffer) {
     //
     refill();
+    //
+    char bufferChar = (char)buffer[index + 1];
+    int bufferOffset = 0;
+    if (bufferChar != originalBuffer[0]) {
+      int[] checkBufferRange = Arrays.copyOfRange(buffer, index + 1, index + extraLength + 1);
+      char[] checkOriginalBufferRange = Arrays.copyOfRange(originalBuffer, index, index + extraLength);
+      for (int i = 0; i < checkOriginalBufferRange.length; i++) {
+        if ( checkOriginalBufferRange[i] == (char)checkBufferRange[0] ) {
+          bufferOffset = i;
+          break;
+        }
+      }
+    }
+    int originalIndex = 1;
+    int originalExtraLength = extraLength + 1;
+    originalIndex -= bufferOffset;
+    originalExtraLength -= bufferOffset;
+    //
     clearAttributes();
-    termBuffer[] = termAtt.resizeBuffer(extra_length*2);
+    char[] termBuffer = termAtt.resizeBuffer(extraLength*2);
     int len_extra = 0;
-    for (int i = 1; i < extra_length + 1; i++){
+    for (int i = originalIndex; i < originalExtraLength; i++){
       int len_i = Character.toChars(buffer[index + i], termBuffer, len_extra);
       len_extra += len_i;
     }
     termAtt.setLength(len_extra);
-    offsetAtt.setOffset(startOffset[index], endOffset[index + extra_length]);
+    offsetAtt.setOffset(startOffset[originalIndex], endOffset[originalIndex + originalExtraLength - bufferOffset]);
     typeAtt.setType(EXTRA_TYPE);
-    index += extra_length + 1;
+    index += extraLength + 1;
   }
 
   /**
