@@ -337,7 +337,7 @@ public final class CJKBigramFilter extends TokenFilter {
     termAtt.setLength(len_extra);
     offsetAtt.setOffset(startOffset[originalIndex], endOffset[originalIndex + originalExtraLength - bufferOffset]);
     typeAtt.setType(EXTRA_TYPE);
-    index += extraLength + 1;
+    index += extraLength + 1 - bufferOffset;
   }
 
   /**
